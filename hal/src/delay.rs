@@ -50,6 +50,7 @@ impl DelayMs<u8> for Delay {
 
 impl DelayUs<u32> for Delay {
     fn delay_us(&mut self, us: u32) {
+        if us == 0 { return; }
         let rvr = us * (self.sysclock.0 / 1_000_000);
 
         assert!(rvr < (1 << 24));
