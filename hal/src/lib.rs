@@ -15,6 +15,7 @@ pub extern crate embedded_hal as hal;
 extern crate nb;
 extern crate void;
 
+pub mod adc;
 mod calibration;
 pub mod clock;
 pub mod delay;
