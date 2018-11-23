@@ -12,8 +12,10 @@ mod i2c;
 mod i2c_slave;
 mod pads;
 mod spi;
+mod uart;
 
 pub use self::i2c::*;
 pub use self::i2c_slave::*;
 pub use self::pads::*;
 pub use self::spi::*;
+pub use self::uart::*;
