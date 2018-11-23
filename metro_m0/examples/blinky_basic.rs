@@ -2,12 +2,12 @@
 #![no_std]
 
 extern crate cortex_m;
-extern crate cortex_m_semihosting;
+// extern crate cortex_m_semihosting;
 extern crate metro_m0 as hal;
 #[cfg(not(feature = "use_semihosting"))]
 extern crate panic_abort;
-#[cfg(feature = "use_semihosting")]
-extern crate panic_semihosting;
+// #[cfg(feature = "use_semihosting")]
+// extern crate panic_semihosting;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
@@ -23,6 +23,7 @@ fn main() {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
+
     let mut pins = hal::pins(peripherals.PORT);
     let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
     let mut delay = Delay::new(core.SYST, &mut clocks);
