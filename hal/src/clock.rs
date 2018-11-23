@@ -113,6 +113,7 @@ impl GenericClockController {
         // Feed DFLL48 into the main clock
         state.set_gclk_divider_and_source(GCLK0, 1, DFLL48M, true);
         // We are now running at 48Mhz
+        //
 
         // Reset various dividers back to 1
         pm.cpusel.write(|w| w.cpudiv().div1());
@@ -153,6 +154,14 @@ impl GenericClockController {
         GClock {
             gclk: GCLK1,
             freq: self.gclks[1],
+        }
+    }
+
+    /// Returns a `GClock` for gclk1, the 32Khz oscillator.
+    pub fn gclk2(&mut self) -> GClock {
+        GClock {
+            gclk: GCLK2,
+            freq: self.gclks[2],
         }
     }
 
@@ -201,6 +210,7 @@ impl GenericClockController {
             DPLL96M => 96.mhz().into(),
             GCLKIN | XOSC | _ => unimplemented!(),
         };
+        // TODO: limited number of bits available here
         self.gclks[idx] = Hertz(freq.0 / divider as u32);
         Some(GClock { gclk, freq })
     }
@@ -276,6 +286,7 @@ clock_generator!(
     (sercom4_core, Sercom4CoreClock, SERCOM4_CORE),
     (sercom5_core, Sercom5CoreClock, SERCOM5_CORE),
     (adc, AdcClock, ADC),
+    (wdt, WdtClock, WDT),
     (usb, UsbClock, USB),
 );
 

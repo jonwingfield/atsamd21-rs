@@ -25,3 +25,4 @@ pub mod sercom;
 pub mod time;
 pub mod timer;
 pub mod usb;
+pub mod watchdog;

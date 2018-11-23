@@ -1,14 +1,16 @@
 #![no_std]
+#![feature(nonzero)]
 
 extern crate atsamd21_hal as hal;
 
+pub use hal::adc::*;
 pub use hal::atsamd21g18a::*;
 use hal::prelude::*;
 pub use hal::*;
 
 use gpio::{Floating, Input, Output, Port, PushPull};
 use hal::clock::GenericClockController;
-use hal::sercom::{I2CMaster3, PadPin, SPIMaster4, SPIMaster5};
+use hal::sercom::{I2CMaster3, I2CSlave3, PadPin, SPIMaster4, SPIMaster5};
 use hal::time::Hertz;
 
 /// Maps the pins to their arduino names and
@@ -83,6 +85,9 @@ pub struct Pins {
     pub flash_miso: gpio::Pb3<Input<Floating>>,
     /// The CS pin attached to the on-board SPI flash
     pub flash_cs: gpio::Pa13<Input<Floating>>,
+
+    pub dotstar_sck: gpio::Pa0<Input<Floating>>,
+    pub dotstar_mosi: gpio::Pa1<Input<Floating>>,
 }
 
 /// Returns the pins for the device
@@ -121,6 +126,9 @@ pub fn pins(port: atsamd21g18a::PORT) -> Pins {
         flash_mosi: pins.pb22,
         flash_miso: pins.pb3,
         flash_cs: pins.pa13,
+
+        dotstar_sck: pins.pa0,
+        dotstar_mosi: pins.pa1,
     }
 }
 
@@ -215,4 +223,17 @@ pub fn i2c_master<F: Into<Hertz>>(
         sda.into_pad(port),
         scl.into_pad(port),
     )
+}
+
+/// Convenience for setting up the labelled SDA, SCL pins to
+/// operate as an I2C master running at the specified frequency.
+pub fn i2c_slave(
+    sercom3: SERCOM3,
+    pm: &mut PM,
+    sda: gpio::Pa22<Input<Floating>>,
+    scl: gpio::Pa23<Input<Floating>>,
+    port: &mut Port,
+    addr: u8,
+) -> I2CSlave3 {
+    I2CSlave3::new(sercom3, pm, sda.into_pad(port), scl.into_pad(port), addr)
 }
