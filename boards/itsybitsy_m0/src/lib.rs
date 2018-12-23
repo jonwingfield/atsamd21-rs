@@ -15,7 +15,7 @@ pub use hal::*;
 
 use gpio::{Floating, Input, Output, Port, PushPull};
 use hal::clock::GenericClockController;
-use hal::sercom::{I2CMaster3, PadPin, SPIMaster4, SPIMaster5};
+use hal::sercom::{I2CMaster3, I2CSlave3, PadPin, SPIMaster4, SPIMaster5};
 use hal::time::Hertz;
 
 define_pins!(
@@ -204,4 +204,21 @@ pub fn usb_bus(
         dp.into_function(port),
         usb,
     ))
+}
+
+/// Convenience for setting up the labelled SDA, SCL pins to
+/// operate as an I2C slave at the specified address
+pub fn i2c_slave(
+    clocks: &mut GenericClockController,
+    sercom3: SERCOM3,
+    pm: &mut PM,
+    sda: gpio::Pa22<Input<Floating>>,
+    scl: gpio::Pa23<Input<Floating>>,
+    port: &mut Port,
+    addr: u8,
+) -> I2CSlave3 {
+    let gclk0 = clocks.gclk0(); // TODO: this may not be needed
+    I2CSlave3::new(
+        &clocks.sercom3_core(&gclk0).unwrap(),
+        sercom3, pm, sda.into_pad(port), scl.into_pad(port), addr)
 }

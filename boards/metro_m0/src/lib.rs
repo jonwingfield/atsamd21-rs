@@ -202,19 +202,6 @@ pub fn i2c_master<F: Into<Hertz>>(
     )
 }
 
-/// Convenience for setting up the labelled SDA, SCL pins to
-/// operate as an I2C master running at the specified frequency.
-pub fn i2c_slave(
-    sercom3: SERCOM3,
-    pm: &mut PM,
-    sda: gpio::Pa22<Input<Floating>>,
-    scl: gpio::Pa23<Input<Floating>>,
-    port: &mut Port,
-    addr: u8,
-) -> I2CSlave3 {
-    I2CSlave3::new(sercom3, pm, sda.into_pad(port), scl.into_pad(port), addr)
-}
-
 #[cfg(feature = "usb")]
 pub fn usb_bus(
     usb: USB,
