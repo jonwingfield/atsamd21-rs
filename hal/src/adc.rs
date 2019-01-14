@@ -150,10 +150,48 @@ impl Adc {
     pub fn read_sync(&mut self, pos: u8) -> u16 {
         self.state.read(
             MUXNEGW::GND,
+            // TODO: these are hard-coded to the ItsyBitsy layout. Make them more generic and map
+            // them in the HAL of the board crates
             match pos {
-                0 => MUXPOSW::PIN0,
-                1 => MUXPOSW::PIN2,
-                2 => MUXPOSW::PIN3,
+                0 => MUXPOSW::PIN0, // A0
+                1 => MUXPOSW::PIN2, // A1
+                2 => MUXPOSW::PIN3, // A2
+                3 => MUXPOSW::PIN4, // A3
+                4 => MUXPOSW::PIN5, // A4
+                5 => MUXPOSW::PIN10, // A5
+                6 => MUXPOSW::PIN19, // D0
+                7 => MUXPOSW::PIN18, // D1
+                8 => MUXPOSW::PIN17, // D3
+                9 => MUXPOSW::PIN16, // D4
+                _ => MUXPOSW::PIN0,
+            },
+        )
+    }
+
+    pub fn read_sync_with_neg(&mut self, pos: u8, neg: u8) -> u16 {
+        self.state.read(
+            match neg {
+                0 => MUXNEGW::PIN0, // A0
+                1 => MUXNEGW::PIN1, // AREF
+                2 => MUXNEGW::PIN2, // A2
+                3 => MUXNEGW::PIN3, // A3
+                4 => MUXNEGW::PIN4, // A4
+                5 => MUXNEGW::PIN4, // A5
+                _ => MUXNEGW::GND,
+            },
+            // TODO: these are hard-coded to the ItsyBitsy layout. Make them more generic and map
+            // them in the HAL of the board crates
+            match pos {
+                0 => MUXPOSW::PIN0, // A0
+                1 => MUXPOSW::PIN2, // A1
+                2 => MUXPOSW::PIN3, // A2
+                3 => MUXPOSW::PIN4, // A3
+                4 => MUXPOSW::PIN5, // A4
+                5 => MUXPOSW::PIN10, // A5
+                6 => MUXPOSW::PIN19, // D0
+                7 => MUXPOSW::PIN18, // D1
+                8 => MUXPOSW::PIN17, // D3
+                9 => MUXPOSW::PIN16, // D4
                 _ => MUXPOSW::PIN0,
             },
         )
